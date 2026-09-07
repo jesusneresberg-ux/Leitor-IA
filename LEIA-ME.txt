@@ -1,0 +1,24 @@
+LEITOR IA — ATUALIZAÇÃO V2
+
+Arquivos para substituir no repositório GitHub:
+1. index.html
+2. service-worker.js
+
+Principais melhorias:
+- Rolagem vertical contínua de todo o PDF.
+- Texto justificado estilo Word.
+- Evita hifenização e quebra no meio das palavras.
+- 8 opções de fundo: branco, creme, sépia, cinza, verde, azul, lavanda e preto.
+- Audiobook com seleção automática da melhor voz pt-BR disponível.
+- Prioridade para vozes Natural/Neural/Premium/Google/Microsoft/Samsung quando existirem no aparelho.
+- Leitura do documento inteiro ou somente da página atual.
+- Estilos de voz Natural/IA, Suave e Firme.
+- Navegação por página sem interromper a rolagem vertical.
+- Referências compactas preservadas.
+
+No GitHub:
+Code > Add file > Upload files
+Selecione index.html e service-worker.js
+Confirme em Commit changes.
+
+Depois aguarde alguns instantes e atualize o site.
