@@ -1,4 +1,33 @@
-import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+  getAI,
+  getGenerativeModel,
+  GoogleAIBackend
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-ai.js";import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"; const firebaseConfig = {
+  const firebaseConfig = {
+  apiKey: "AIzaSyDYQrGYjmqbFWKDvhLFDbkfRjyt1ogcN7E",
+  authDomain: "leitor-ia-69adc.firebaseapp.com",
+  projectId: "leitor-ia-69adc",
+  storageBucket: "leitor-ia-69adc.firebasestorage.app",
+  messagingSenderId: "713448988376",
+  appId: "1:713448988376:web:27c72bc82fd1cfc7f801ad",
+  measurementId: "G-N2Y8L0Q88F"
+};
+
+// Inicializa o Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+
+// Conecta ao Gemini Developer API
+const ai = getAI(firebaseApp, {
+  backend: new GoogleAIBackend()
+});
+
+// Modelo usado pelo Leitor IA
+const model = getGenerativeModel(ai, {
+  model: "gemini-3.7-flash"
+});
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const state={pdf:null,page:1,pages:0,textByPage:{},refsByPage:{},notes:[],stripHeaders:true,compactRefs:true,original:false,dark:false};
