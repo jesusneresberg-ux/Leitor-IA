@@ -157,7 +157,16 @@
 import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const state={pdf:null,docId:null,docName:'',page:1,pages:0,textByPage:{},refsByPage:{},cleanByPage:{},notes:[],stripHeaders:true,compactRefs:true,original:false,dark:false,appTheme:'light',accent:'blue',readerFont:'system',paragraphSpacing:1.1,textAlign:'justify',readerBg:'white',observer:null,library:[],audio:{queue:[],index:0,stopped:true,voiceIndex:'auto',rate:1.05,style:'natural',scope:'document'},ai:{scope:'page',model:'gemini-3.7-flash',config:null,siteKey:'',runtime:null,history:[]}};
+const DEFAULT_FIREBASE_CONFIG={
+  apiKey:"AIzaSyDYQrGYjmqbFWKDvhLFDbkfRjyt1ogcN7E",
+  authDomain:"leitor-ia-69adc.firebaseapp.com",
+  projectId:"leitor-ia-69adc",
+  storageBucket:"leitor-ia-69adc.firebasestorage.app",
+  messagingSenderId:"713448988376",
+  appId:"1:713448988376:web:27c72bc82fd1cfc7f801ad",
+  measurementId:"G-N2Y8L0Q88F"
+};
+const state={pdf:null,docId:null,docName:'',page:1,pages:0,textByPage:{},refsByPage:{},cleanByPage:{},notes:[],stripHeaders:true,compactRefs:true,original:false,dark:false,appTheme:'light',accent:'blue',readerFont:'system',paragraphSpacing:1.1,textAlign:'justify',readerBg:'white',observer:null,library:[],audio:{queue:[],index:0,stopped:true,voiceIndex:'auto',rate:1.05,style:'natural',scope:'document'},ai:{scope:'page',model:'gemini-3.7-flash',config:{...DEFAULT_FIREBASE_CONFIG},siteKey:'',runtime:null,history:[]}};
 const DB_NAME='leitor-ia-db',DB_VERSION=1,STORE='documents';
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function fmtSize(bytes){if(!bytes)return'0 KB';if(bytes<1024*1024)return`${Math.max(1,Math.round(bytes/1024))} KB`;return`${(bytes/1024/1024).toFixed(1)} MB`}
@@ -282,7 +291,7 @@ function renderAudio(){$('#panelEyebrow').textContent='AUDIOBOOK';$('#panelTitle
 function loadAISettings(){
   try{
     const saved=JSON.parse(localStorage.getItem('leitor-ia-ai')||'{}');
-    state.ai.config=saved.config||null;state.ai.siteKey=saved.siteKey||'';state.ai.scope=saved.scope||'page';
+    state.ai.config=Object.prototype.hasOwnProperty.call(saved,'config')?saved.config:{...DEFAULT_FIREBASE_CONFIG};state.ai.siteKey=saved.siteKey||'';state.ai.scope=saved.scope||'page';
     state.ai.history=JSON.parse(localStorage.getItem('leitor-ia-ai-history')||'[]');
   }catch{}
 }
@@ -365,7 +374,7 @@ function renderAI(){
     <div class="panel-card"><textarea id="aiQ" placeholder="Pergunte algo sobre o documento..."></textarea><div class="panel-actions"><button id="askAI" class="primary-btn">Perguntar à IA</button></div></div>
     <div id="aiAnswer" class="panel-card">${configured?'<b>IA pronta.</b><p>Escolha uma ação ou faça uma pergunta.</p>':'<b>Falta conectar o Firebase AI Logic.</b><p>Toque em “Configurar IA” abaixo. A chave do modelo não fica gravada no GitHub.</p>'}</div>
     <div class="panel-card"><b>Conversa</b><div id="aiHistory">${aiHistoryHtml()}</div></div>
-    <details class="panel-card" ${configured?'':'open'}><summary style="cursor:pointer;font-weight:700">⚙ Configurar IA</summary><p class="settings-note">No Firebase Console, copie o objeto <b>firebaseConfig</b> do app Web e informe também a chave pública do reCAPTCHA Enterprise usada pelo App Check.</p><textarea id="firebaseConfig" style="min-height:130px" placeholder='Cole o firebaseConfig aqui'>${state.ai.config?esc(JSON.stringify(state.ai.config,null,2)):''}</textarea><input id="appCheckKey" placeholder="Chave do reCAPTCHA Enterprise / App Check" value="${esc(state.ai.siteKey)}"><div class="panel-actions"><button id="saveAIConfig" class="primary-btn">Salvar configuração</button><button id="clearAIConfig" class="soft-btn">Limpar</button></div><div id="aiConfigStatus" class="settings-note">Modelo: ${state.ai.model}</div></details>`;
+    <details class="panel-card" ${configured?'':'open'}><summary style="cursor:pointer;font-weight:700">⚙ Configurar IA</summary><p class="settings-note">O Firebase deste projeto já está integrado. Falta apenas informar a chave pública do reCAPTCHA Enterprise usada pelo App Check.</p><textarea id="firebaseConfig" style="min-height:130px" placeholder='Configuração Firebase'>${state.ai.config?esc(JSON.stringify(state.ai.config,null,2)):''}</textarea><input id="appCheckKey" placeholder="Chave pública do reCAPTCHA Enterprise / App Check" value="${esc(state.ai.siteKey)}"><div class="panel-actions"><button id="saveAIConfig" class="primary-btn">Salvar configuração</button><button id="clearAIConfig" class="soft-btn">Limpar</button></div><div id="aiConfigStatus" class="settings-note">Modelo: ${state.ai.model}</div></details>`;
   $('#aiScope').value=state.ai.scope;$('#aiScope').onchange=e=>{state.ai.scope=e.target.value;saveAISettings()};
   $$('[data-ai-task]').forEach(b=>b.onclick=()=>runAI(b.dataset.aiTask));
   $('#askAI').onclick=()=>{const q=$('#aiQ').value.trim();if(q)runAI('ask',q)};
