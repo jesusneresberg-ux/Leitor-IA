@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>Leitor IA</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div><div class="eyebrow">LEITURA INTELIGENTE</div><h1>Leitor IA</h1></div>
+    <div class="top-actions"><button id="themeBtn" class="icon-btn">◐</button><button id="settingsBtn" class="icon-btn">⚙</button></div>
+  </header>
+
+  <section class="quick-tools">
+    <label class="file-btn"><input id="pdfInput" type="file" accept="application/pdf,.pdf" hidden><span>＋</span> Abrir PDF</label>
+    <button id="cleanBtn" class="tool-btn active">Modo limpo</button>
+    <button data-panel="audio" class="tool-btn">Audiobook</button>
+    <button data-panel="notes" class="tool-btn">Anotações</button>
+    <button data-panel="ai" class="tool-btn">IA</button>
+  </section>
+
+  <main class="workspace">
+    <section id="emptyState" class="empty-state">
+      <div class="empty-icon">PDF</div>
+      <h2>Abra um PDF para começar</h2>
+      <p>O modo limpo reduz cabeçalhos e rodapés, mantém referências discretas e adapta o texto para leitura vertical 9:16.</p>
+      <button id="openPdfHero" class="primary-btn">Selecionar PDF</button>
+    </section>
+
+    <section id="readerView" class="reader-view hidden">
+      <div class="reader-toolbar">
+        <button id="prevBtn" class="mini-btn">‹</button>
+        <div class="page-indicator"><span id="pageLabel">Página 1</span><input id="pageSlider" type="range" min="1" max="1" value="1"></div>
+        <button id="nextBtn" class="mini-btn">›</button>
+      </div>
+      <article id="cleanReader" class="clean-reader"><div id="pageText" class="page-text"></div><div id="refsDock" class="refs-dock hidden"><button id="refsBtn" class="refs-chip">Referências <span id="refsCount">0</span></button></div></article>
+      <section id="canvasReader" class="canvas-reader hidden"><canvas id="pdfCanvas"></canvas></section>
+    </section>
+
+    <aside id="panel" class="side-panel hidden">
+      <div class="panel-head"><div><div id="panelEyebrow" class="eyebrow">PAINEL</div><h3 id="panelTitle">Ferramentas</h3></div><button id="closePanelBtn" class="icon-btn">×</button></div>
+      <div id="panelContent"></div>
+    </aside>
+  </main>
+
+  <nav class="bottom-nav">
+    <button data-view="reader" class="nav-btn active"><span>▤</span><small>Leitura</small></button>
+    <button data-view="audio" class="nav-btn"><span>▶</span><small>Áudio</small></button>
+    <button data-view="notes" class="nav-btn"><span>✎</span><small>Notas</small></button>
+    <button data-view="ai" class="nav-btn"><span>✦</span><small>IA</small></button>
+    <button data-view="search" class="nav-btn"><span>⌕</span><small>Pesquisar</small></button>
+  </nav>
+</div>
+
+<dialog id="refsDialog" class="sheet-dialog"><div class="sheet-card"><div class="sheet-head"><h3>Referências da página</h3><button id="refsClose" class="icon-btn">×</button></div><div id="refsList"></div></div></dialog>
+<dialog id="settingsDialog" class="sheet-dialog"><div class="sheet-card"><div class="sheet-head"><h3>Configurações</h3><button id="settingsClose" class="icon-btn">×</button></div>
+  <label class="setting-row"><span>Tamanho do texto</span><input id="fontSize" type="range" min="16" max="30" value="20"></label>
+  <label class="setting-row"><span>Espaçamento</span><input id="lineHeight" type="range" min="14" max="22" value="18"></label>
+  <label class="setting-row switch-row"><span>Ocultar cabeçalhos/rodapés</span><input id="stripHeaders" type="checkbox" checked></label>
+  <label class="setting-row switch-row"><span>Referências compactas</span><input id="compactRefs" type="checkbox" checked></label>
+  <label class="setting-row switch-row"><span>Mostrar página original</span><input id="originalPage" type="checkbox"></label>
+</div></dialog>
+<script type="module" src="app.js"></script>
+</body>
+</html>
