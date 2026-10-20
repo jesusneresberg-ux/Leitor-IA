@@ -1,24 +1,28 @@
-LEITOR IA — ATUALIZAÇÃO V2
+LUME — ATUALIZAÇÃO DE TELA INICIAL E LEITURA OFFLINE
 
-Arquivos para substituir no repositório GitHub:
-1. index.html
-2. service-worker.js
+Status: preparada para instalação. A conexão GitHub deste ChatGPT retornou HTTP 403 ao tentar gravar o projeto; o código do repositório não foi alterado automaticamente.
 
-Principais melhorias:
-- Rolagem vertical contínua de todo o PDF.
-- Texto justificado estilo Word.
-- Evita hifenização e quebra no meio das palavras.
-- 8 opções de fundo: branco, creme, sépia, cinza, verde, azul, lavanda e preto.
-- Audiobook com seleção automática da melhor voz pt-BR disponível.
-- Prioridade para vozes Natural/Neural/Premium/Google/Microsoft/Samsung quando existirem no aparelho.
-- Leitura do documento inteiro ou somente da página atual.
-- Estilos de voz Natural/IA, Suave e Firme.
-- Navegação por página sem interromper a rolagem vertical.
-- Referências compactas preservadas.
+O que muda:
+1. Ao iniciar: estante do LUME diretamente, sem tela de escolha entre abrir PDF e biblioteca online.
+2. Leitura: somente modo limpo (texto adaptado à tela), sem modo PDF original.
+3. Controles: cabeçalho, rodapé e barra de página recolhidos ao abrir um documento. Botão ☰ flutuante expande/recolhe as ferramentas e dá acesso às configurações.
+4. Arquivos: IndexedDB guarda PDFs locais, PDF.js (motor e worker) copiado para assets/pdfjs; service worker mantém o app instalado em cache.
+5. Áudio: lê o texto do PDF usando a voz do sistema do Android. Offline requer uma voz local instalada; vozes remotas e recursos de IA na nuvem não funcionam sem internet.
 
-No GitHub:
-Code > Add file > Upload files
-Selecione index.html e service-worker.js
-Confirme em Commit changes.
+COMO INSTALAR
 
-Depois aguarde alguns instantes e atualize o site.
+No computador, faça download/clonagem do repositório:
+  https://github.com/jesusneresberg-ux/Leitor-IA
+
+Coloque upgrade_lume.py em qualquer pasta e execute no terminal:
+  python upgrade_lume.py /caminho/para/Leitor-IA
+
+Requer acesso à internet na instalação para obter os dois arquivos da versão 4.10.38 do PDF.js, que passarão a ficar no próprio projeto. Depois execute:
+  cd /caminho/para/Leitor-IA
+  git add index.html manifest.webmanifest service-worker.js assets/pdfjs
+  git commit -m "Atualiza LUME: leitura limpa e offline"
+  git push
+
+Se estiver usando GitHub Pages ou PWA/APK WebView, abra o aplicativo uma vez conectado à internet após publicar a atualização, aguarde o cache instalar e então teste em modo avião.
+
+IMPORTANTE: para esta mudança aparecer no app Android, o APK/WebView deve carregar a versão publicada no GitHub Pages, ou precisa ser recompilado e reinstalado com estes arquivos. A atualização não foi publicada nem compilada automaticamente.
