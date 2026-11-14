@@ -1,6 +1,6 @@
 LUME — ATUALIZAÇÃO DE TELA INICIAL E LEITURA OFFLINE
 
-Status: preparada para instalação. A conexão GitHub deste ChatGPT retornou HTTP 403 ao tentar gravar o projeto; o código do repositório não foi alterado automaticamente.
+Status: APLICADA em 14/11/2026 (index.html, manifest, service worker e assets/pdfjs publicados no repositório).
 
 O que muda:
 1. Ao iniciar: estante do LUME diretamente, sem tela de escolha entre abrir PDF e biblioteca online.

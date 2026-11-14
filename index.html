@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <title>Leitor IA</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <title>LUME — Leitor PDF</title>
   <!-- Versão standalone para GitHub Pages: basta publicar este index.html. -->
   <style>
     :root{
@@ -64,12 +65,29 @@
     .dark{--bg:#0b1220;--surface:#111b2c;--surface2:#182438;--text:#edf3fb;--muted:#97a6ba;--line:#26364d;--shadow:none}.dark .view-btn.active{background:#1d3158;color:#bcd2ff}.dark .book-cover{background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 18%,#111b2c),#182438);color:color-mix(in srgb,var(--accent) 60%,#fff)}
     @media(max-width:420px){.bg-palette{grid-template-columns:repeat(4,1fr)}.library-tools{grid-template-columns:1fr}.sort-box{max-width:none}.shelf{gap:9px}.book-card{padding:11px}.book-cover{height:88px}}
     @media(min-width:700px){.shelf{grid-template-columns:repeat(3,minmax(0,1fr))}.library-view{padding:20px}.reader-view{padding:14px 16px 0}.clean-reader{padding:28px 34px 40px}}
+    /* LUME: foco sem menus fixos, expansão temporária pelo botão flutuante */
+    .library-home{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 4px 12px}
+    .library-home h2{font-size:22px;letter-spacing:-.02em;margin:3px 0 4px}
+    .library-home p{font-size:11px;line-height:1.45;color:var(--muted);margin:0;max-width:420px}
+    .library-home .primary-btn{white-space:nowrap;flex-shrink:0;font-size:12px}
+    .reader-controls-toggle{display:none;position:absolute;bottom:calc(14px + env(safe-area-inset-bottom));right:14px;width:45px;height:45px;z-index:55;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--accent);box-shadow:0 6px 22px rgba(15,23,42,.2);font-size:22px;place-items:center}
+    body.reading-immersive .reader-controls-toggle{display:grid}
+    body.reading-immersive:not(.reading-tools-open) .topbar,
+    body.reading-immersive:not(.reading-tools-open) .view-switch,
+    body.reading-immersive:not(.reading-tools-open) .reader-toolbar,
+    body.reading-immersive:not(.reading-tools-open) #bottomNav{display:none!important}
+    body.reading-immersive:not(.reading-tools-open) .reader-view{padding:0}
+    body.reading-immersive:not(.reading-tools-open) .reader-scroll{padding-bottom:0}
+    body.reading-immersive:not(.reading-tools-open) .clean-reader{border:0;border-radius:0;box-shadow:none;padding:20px 18px 70px}
+    body.reading-immersive:not(.reading-tools-open) .canvas-reader{border:0;border-radius:0;padding:0}
+    body.reading-tools-open .reader-controls-toggle{bottom:calc(77px + env(safe-area-inset-bottom))}
+    @media(max-width:420px){.library-home h2{font-size:19px}.library-home p{font-size:10px}}
   </style>
 </head>
 <body data-reader-bg="white" data-accent="blue">
 <div class="app-shell">
   <header class="topbar">
-    <div class="brand"><div class="eyebrow">LEITURA INTELIGENTE</div><h1>Leitor IA</h1></div>
+    <div class="brand"><div class="eyebrow">LEITURA INTELIGENTE</div><h1>LUME</h1></div>
     <button id="settingsBtn" class="icon-btn" aria-label="Formatação e configurações" title="Formatação">⚙</button>
   </header>
 
@@ -80,11 +98,9 @@
 
   <main class="main">
     <section id="libraryView" class="library-view">
-      <div class="library-hero">
-        <div class="eyebrow" style="color:#bcd2ff">SUA BIBLIOTECA</div>
-        <h2>Todos os seus PDFs em uma estante</h2>
-        <p>Os arquivos ficam guardados neste aparelho para você abrir novamente sem precisar selecionar o PDF toda vez.</p>
-        <button id="addPdfBtn" class="primary-btn hero-btn">＋ Adicionar PDF</button>
+      <div class="library-home">
+        <div><div class="eyebrow">LUME • BIBLIOTECA</div><h2>Minha estante</h2><p>PDFs salvos no aparelho, acessíveis mesmo sem internet.</p></div>
+        <button id="addPdfBtn" class="primary-btn" aria-label="Adicionar PDF à estante">＋ PDF</button>
         <input id="pdfInput" type="file" accept="application/pdf,.pdf" multiple hidden>
       </div>
 
@@ -125,6 +141,8 @@
     </aside>
   </main>
 
+  <button id="readerControlsToggle" class="reader-controls-toggle" type="button" aria-label="Mostrar ou recolher ferramentas de leitura" aria-expanded="false" title="Ferramentas">☰</button>
+
   <nav id="bottomNav" class="bottom-nav hidden">
     <button data-view="audio" class="nav-btn"><span>▶</span><small>Áudio</small></button>
     <button data-view="notes" class="nav-btn"><span>✎</span><small>Notas</small></button>
@@ -148,14 +166,14 @@
     <div class="setting-row"><span>Cor de fundo da leitura</span><div id="bgPalette" class="bg-palette" role="group" aria-label="Cor de fundo"><button class="bg-swatch active" data-bg="white" title="Branco"></button><button class="bg-swatch" data-bg="cream" title="Creme"></button><button class="bg-swatch" data-bg="sepia" title="Sépia"></button><button class="bg-swatch" data-bg="gray" title="Cinza"></button><button class="bg-swatch" data-bg="mint" title="Verde suave"></button><button class="bg-swatch" data-bg="blue" title="Azul suave"></button><button class="bg-swatch" data-bg="lavender" title="Lavanda"></button><button class="bg-swatch" data-bg="night" title="Preto"></button></div></div>
     <label class="setting-row switch-row"><span>Ocultar cabeçalhos/rodapés</span><input id="stripHeaders" type="checkbox" checked></label>
     <label class="setting-row switch-row"><span>Referências compactas</span><input id="compactRefs" type="checkbox" checked></label>
-    <label class="setting-row switch-row"><span>Mostrar páginas originais</span><input id="originalPage" type="checkbox"></label>
+    <input id="originalPage" type="checkbox" hidden>
     <div class="settings-note">A tela permanece fixa como um aplicativo. Tamanho, espaçamentos e página são definidos por números, sem barras de porcentagem.</div>
   </div>
 </dialog>
 
 <script type="module">
-import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
-pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
+import * as pdfjsLib from "./assets/pdfjs/pdf.min.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc = "./assets/pdfjs/pdf.worker.min.mjs";
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const DEFAULT_FIREBASE_CONFIG={
   apiKey:"AIzaSyDYQrGYjmqbFWKDvhLFDbkfRjyt1ogcN7E",
@@ -208,7 +226,7 @@ function loadPrefs(){
     state.paragraphSpacing=Number(p.paragraphSpacing||1.1);
     state.stripHeaders=p.stripHeaders!==false;
     state.compactRefs=p.compactRefs!==false;
-    state.original=!!p.original;
+    state.original=false; // leitura limpa obrigatória
     state.textAlign=p.textAlign||'justify';
     state.readerBg=p.readerBg||'white';
     state.audio.rate=Number(p.audioRate||1.05);
@@ -251,7 +269,7 @@ function savePrefs(){
   }))
 }
 function updatePalette(){$$('.bg-swatch').forEach(b=>b.classList.toggle('active',b.dataset.bg===state.readerBg))}
-function showView(view){const library=view==='library';$('#libraryView').classList.toggle('hidden',!library);$('#readerView').classList.toggle('hidden',library);$('#libraryTab').classList.toggle('active',library);$('#readerTab').classList.toggle('active',!library);$('#bottomNav').classList.toggle('hidden',library||!state.pdf);closePanel()}
+function showView(view){const library=view==='library';$('#libraryView').classList.toggle('hidden',!library);$('#readerView').classList.toggle('hidden',library);$('#libraryTab').classList.toggle('active',library);$('#readerTab').classList.toggle('active',!library);$('#bottomNav').classList.toggle('hidden',library||!state.pdf);document.body.classList.toggle('reading-immersive',!library&&!!state.pdf);document.body.classList.remove('reading-tools-open');$('#readerControlsToggle').setAttribute('aria-expanded','false');$('#readerControlsToggle').textContent='☰';closePanel()}
 async function refreshLibrary(){state.library=await dbAll();renderShelf()}
 function renderShelf(){const q=$('#librarySearch').value.trim().toLowerCase(),sort=$('#librarySort').value;let docs=state.library.filter(d=>!q||d.name.toLowerCase().includes(q));docs.sort((a,b)=>sort==='name'?a.name.localeCompare(b.name,'pt-BR'):sort==='added'?new Date(b.addedAt)-new Date(a.addedAt):new Date(b.lastOpened||b.addedAt)-new Date(a.lastOpened||a.addedAt));$('#libraryCount').textContent=`${state.library.length} ${state.library.length===1?'arquivo':'arquivos'}`;$('#shelf').innerHTML=docs.length?docs.map(d=>`<article class="book-card"><div class="book-cover"></div><div><div class="book-name" title="${esc(d.name)}">${esc(d.name)}</div><div class="book-meta">${d.pages?`${d.pages} pág. • `:''}${fmtSize(d.size)}<br>Adicionado em ${fmtDate(d.addedAt)}</div></div><div class="book-actions"><button class="book-open" data-open-doc="${d.id}">Abrir</button><button class="book-delete" data-delete-doc="${d.id}" aria-label="Excluir">×</button></div></article>`).join(''):'<div class="empty-shelf"><b>Sua estante está vazia</b>Adicione um ou mais PDFs para começar.</div>';$$('[data-open-doc]').forEach(b=>b.onclick=()=>openStoredDocument(b.dataset.openDoc));$$('[data-delete-doc]').forEach(b=>b.onclick=()=>removeDocument(b.dataset.deleteDoc))}
 async function addFiles(files){const list=[...files].filter(f=>f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'));if(!list.length)return;$('#addPdfBtn').disabled=true;$('#addPdfBtn').textContent='Adicionando…';try{for(const file of list){const id=crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random()}`;let pages=0;try{const buf=await file.arrayBuffer();const pdf=await pdfjsLib.getDocument({data:buf.slice(0)}).promise;pages=pdf.numPages;await pdf.destroy()}catch{}await dbPut({id,name:file.name,size:file.size,type:file.type||'application/pdf',addedAt:new Date().toISOString(),lastOpened:new Date().toISOString(),pages,blob:file})}await refreshLibrary();if(list.length===1){const newest=[...state.library].sort((a,b)=>new Date(b.addedAt)-new Date(a.addedAt))[0];if(newest)await openStoredDocument(newest.id)}}catch(e){alert('Não foi possível guardar o PDF neste aparelho. Verifique o espaço disponível.')}finally{$('#addPdfBtn').disabled=false;$('#addPdfBtn').textContent='＋ Adicionar PDF';$('#pdfInput').value=''}}
@@ -280,14 +298,14 @@ function normalizeSpeechText(text){return String(text||'').replace(/(\p{L})-\s+(
 function splitForSpeech(text,max=210){const cleaned=normalizeSpeechText(text);if(!cleaned)return[];const sentences=cleaned.match(/[^.!?;:]+[.!?;:]?|.+$/g)||[cleaned],chunks=[];let buf='';for(let sentence of sentences){sentence=sentence.trim();if(!sentence)continue;if((buf+' '+sentence).trim().length<=max){buf=(buf+' '+sentence).trim();continue}if(buf){chunks.push(buf);buf=''}while(sentence.length>max){let cut=sentence.lastIndexOf(' ',max);if(cut<80)cut=max;chunks.push(sentence.slice(0,cut).trim());sentence=sentence.slice(cut).trim()}buf=sentence}if(buf)chunks.push(buf);return chunks}
 function voiceScore(v){const name=(v.name||'').toLowerCase(),lang=(v.lang||'').toLowerCase();let s=0;if(lang==='pt-br')s+=100;else if(lang.startsWith('pt'))s+=70;if(/natural|neural|premium|wavenet|google|microsoft|samsung/.test(name))s+=35;return s}
 function bestVoice(voices){return[...voices].sort((a,b)=>voiceScore(b)-voiceScore(a))[0]||voices[0]||null}
-function getSelectedVoice(){const voices=speechSynthesis.getVoices();if(state.audio.voiceIndex==='auto')return bestVoice(voices);return voices[Number(state.audio.voiceIndex)]||bestVoice(voices)}
+function getSelectedVoice(){const all=speechSynthesis.getVoices();const voices=navigator.onLine?all:all.filter(v=>v.localService!==false);if(state.audio.voiceIndex==='auto')return bestVoice(voices);const selected=all[Number(state.audio.voiceIndex)];return selected&&voices.includes(selected)?selected:bestVoice(voices)}
 function styleParams(){if(state.audio.style==='soft')return{rate:Math.max(.8,state.audio.rate-.06),pitch:1.06};if(state.audio.style==='firm')return{rate:Math.min(1.45,state.audio.rate+.03),pitch:.96};return{rate:state.audio.rate,pitch:1.01}}
 function audioSourceText(){if(!state.pdf)return'';if(state.audio.scope==='page')return currentText();return Array.from({length:state.pages},(_,i)=>state.cleanByPage[i+1]||state.textByPage[i+1]||'').join(' ')}
 function updateAudioStatus(msg){const el=$('#audioStatus');if(el)el.textContent=msg}
 function stopAudio(){state.audio.stopped=true;state.audio.queue=[];state.audio.index=0;speechSynthesis.cancel();updateAudioStatus('Parado.')}
 function speakNext(){if(state.audio.stopped||state.audio.index>=state.audio.queue.length){if(!state.audio.stopped)updateAudioStatus('Leitura concluída.');state.audio.stopped=true;return}const text=state.audio.queue[state.audio.index],u=new SpeechSynthesisUtterance(text),voice=getSelectedVoice(),p=styleParams();if(voice)u.voice=voice;u.lang=voice?.lang||'pt-BR';u.rate=p.rate;u.pitch=p.pitch;u.volume=1;u.onstart=()=>updateAudioStatus(`Lendo trecho ${state.audio.index+1} de ${state.audio.queue.length} • ${voice?.name||'voz do aparelho'}`);u.onend=()=>{if(!state.audio.stopped){state.audio.index++;speakNext()}};u.onerror=e=>{if(e.error!=='canceled'){state.audio.index++;speakNext()}};speechSynthesis.speak(u)}
-function startAudio(){const text=audioSourceText();if(!text)return alert('Aguarde o documento terminar de preparar a leitura.');speechSynthesis.cancel();state.audio.queue=splitForSpeech(text);state.audio.index=0;state.audio.stopped=false;speakNext()}
-function renderAudio(){$('#panelEyebrow').textContent='AUDIOBOOK';$('#panelTitle').textContent='Leitura por voz';$('#panelContent').innerHTML=`<div class="panel-card"><div class="audio-controls"><button id="speak">▶ Ouvir</button><button id="pause">Ⅱ Pausar</button><button id="stop">■ Parar</button></div><label class="setting-row"><span>Trecho</span><select id="audioScope"><option value="document">Documento inteiro</option><option value="page">Somente página atual</option></select></label><label class="setting-row"><span>Voz</span><select id="voice"></select></label><label class="setting-row"><span>Estilo</span><select id="voiceStyle"><option value="natural">Natural</option><option value="soft">Suave</option><option value="firm">Firme</option></select></label><label class="setting-row"><span>Velocidade</span><input id="rate" type="range" min="80" max="145" value="${Math.round(state.audio.rate*100)}"></label><div id="audioStatus" class="audio-status">O app prioriza automaticamente as melhores vozes em português disponíveis no aparelho.</div></div>`;const fill=()=>{const voices=speechSynthesis.getVoices(),best=bestVoice(voices);$('#voice').innerHTML=`<option value="auto">Automática${best?` — ${esc(best.name)}`:''}</option>`+voices.map((v,i)=>`<option value="${i}">${esc(v.name)} — ${esc(v.lang)}</option>`).join('');$('#voice').value=state.audio.voiceIndex};fill();speechSynthesis.onvoiceschanged=fill;$('#audioScope').value=state.audio.scope;$('#voiceStyle').value=state.audio.style;$('#speak').onclick=startAudio;$('#pause').onclick=()=>{if(speechSynthesis.paused){speechSynthesis.resume();updateAudioStatus('Leitura retomada.')}else{speechSynthesis.pause();updateAudioStatus('Pausado.')}};$('#stop').onclick=stopAudio;$('#voice').onchange=e=>{state.audio.voiceIndex=e.target.value;savePrefs()};$('#audioScope').onchange=e=>{state.audio.scope=e.target.value;savePrefs()};$('#voiceStyle').onchange=e=>{state.audio.style=e.target.value;savePrefs()};$('#rate').oninput=e=>{state.audio.rate=Number(e.target.value)/100;savePrefs()}}
+function startAudio(){const text=audioSourceText();if(!text)return alert('Aguarde o documento terminar de preparar a leitura.');if(!navigator.onLine&&!getSelectedVoice()){updateAudioStatus('Nenhuma voz local disponível. Instale uma voz em português nas configurações de texto para fala do Android.');return}speechSynthesis.cancel();state.audio.queue=splitForSpeech(text);state.audio.index=0;state.audio.stopped=false;speakNext()}
+function renderAudio(){$('#panelEyebrow').textContent='AUDIOBOOK';$('#panelTitle').textContent='Leitura por voz';$('#panelContent').innerHTML=`<div class="panel-card"><div class="audio-controls"><button id="speak">▶ Ouvir</button><button id="pause">Ⅱ Pausar</button><button id="stop">■ Parar</button></div><label class="setting-row"><span>Trecho</span><select id="audioScope"><option value="document">Documento inteiro</option><option value="page">Somente página atual</option></select></label><label class="setting-row"><span>Voz</span><select id="voice"></select></label><label class="setting-row"><span>Estilo</span><select id="voiceStyle"><option value="natural">Natural</option><option value="soft">Suave</option><option value="firm">Firme</option></select></label><label class="setting-row"><span>Velocidade</span><input id="rate" type="range" min="80" max="145" value="${Math.round(state.audio.rate*100)}"></label><div id="audioStatus" class="audio-status">Sem internet, a leitura utiliza a voz de síntese de fala instalada no aparelho; vozes de nuvem exigem conexão.</div></div>`;const fill=()=>{const voices=speechSynthesis.getVoices(),best=bestVoice(voices);$('#voice').innerHTML=`<option value="auto">Automática${best?` — ${esc(best.name)}`:''}</option>`+voices.map((v,i)=>`<option value="${i}">${esc(v.name)} — ${esc(v.lang)}</option>`).join('');$('#voice').value=state.audio.voiceIndex};fill();speechSynthesis.onvoiceschanged=fill;$('#audioScope').value=state.audio.scope;$('#voiceStyle').value=state.audio.style;$('#speak').onclick=startAudio;$('#pause').onclick=()=>{if(speechSynthesis.paused){speechSynthesis.resume();updateAudioStatus('Leitura retomada.')}else{speechSynthesis.pause();updateAudioStatus('Pausado.')}};$('#stop').onclick=stopAudio;$('#voice').onchange=e=>{state.audio.voiceIndex=e.target.value;savePrefs()};$('#audioScope').onchange=e=>{state.audio.scope=e.target.value;savePrefs()};$('#voiceStyle').onchange=e=>{state.audio.style=e.target.value;savePrefs()};$('#rate').oninput=e=>{state.audio.rate=Number(e.target.value)/100;savePrefs()}}
 function loadAISettings(){
   try{
     const saved=JSON.parse(localStorage.getItem('leitor-ia-ai')||'{}');
@@ -384,7 +402,7 @@ function renderAI(){
 }
 
 function renderSearch(){$('#panelEyebrow').textContent='PESQUISA';$('#panelTitle').textContent='Pesquisar na internet';$('#panelContent').innerHTML=`<div class="panel-card"><input id="webQ" placeholder="Assunto para pesquisar..."><div class="panel-actions"><button id="googleBtn" class="primary-btn">Pesquisar no Google</button><button id="usePage" class="soft-btn">Usar texto da página</button></div></div>`;$('#googleBtn').onclick=()=>{const q=$('#webQ').value.trim();if(q)window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank','noopener')};$('#usePage').onclick=()=>$('#webQ').value=currentText().slice(0,240)}
-$('#addPdfBtn').onclick=()=>$('#pdfInput').click();$('#pdfInput').onchange=e=>addFiles(e.target.files);$('#librarySearch').oninput=renderShelf;$('#librarySort').onchange=renderShelf;$('#libraryTab').onclick=()=>showView('library');$('#readerTab').onclick=()=>showView('reader');$('#goLibraryBtn').onclick=()=>showView('library');$('#prevBtn').onclick=()=>setCurrentPage(state.page-1,true);$('#nextBtn').onclick=()=>setCurrentPage(state.page+1,true);$('#pageNumber').onchange=e=>setCurrentPage(Number(e.target.value),true);$('#refsClose').onclick=()=>$('#refsDialog').close();$('#settingsBtn').onclick=()=>$('#settingsDialog').showModal();$('#settingsClose').onclick=()=>$('#settingsDialog').close();
+$('#readerControlsToggle').onclick=()=>{const open=document.body.classList.toggle('reading-tools-open');$('#readerControlsToggle').setAttribute('aria-expanded',String(open));$('#readerControlsToggle').textContent=open?'×':'☰';if(!open)closePanel()};$('#addPdfBtn').onclick=()=>$('#pdfInput').click();$('#pdfInput').onchange=e=>addFiles(e.target.files);$('#librarySearch').oninput=renderShelf;$('#librarySort').onchange=renderShelf;$('#libraryTab').onclick=()=>showView('library');$('#readerTab').onclick=()=>showView('reader');$('#goLibraryBtn').onclick=()=>showView('library');$('#prevBtn').onclick=()=>setCurrentPage(state.page-1,true);$('#nextBtn').onclick=()=>setCurrentPage(state.page+1,true);$('#pageNumber').onchange=e=>setCurrentPage(Number(e.target.value),true);$('#refsClose').onclick=()=>$('#refsDialog').close();$('#settingsBtn').onclick=()=>$('#settingsDialog').showModal();$('#settingsClose').onclick=()=>$('#settingsDialog').close();
 $('#appTheme').onchange=e=>{state.appTheme=e.target.value;applyAppTheme();savePrefs()};
 $$('.accent-swatch').forEach(b=>b.onclick=()=>{state.accent=b.dataset.accent;document.body.dataset.accent=state.accent;updateAccentPalette();savePrefs()});
 $('#readerFont').onchange=e=>{state.readerFont=e.target.value;applyReaderFont();savePrefs()};
@@ -393,7 +411,7 @@ $('#lineHeight').onchange=e=>{const v=Math.max(1.2,Math.min(2.5,Number(e.target.
 $('#paragraphSpacing').onchange=e=>{const v=Math.max(.4,Math.min(2.5,Number(e.target.value)||1.1));state.paragraphSpacing=v;e.target.value=v.toFixed(1);document.documentElement.style.setProperty('--paragraph-gap',`${v}em`);savePrefs()};
 $('#textAlign').onchange=e=>{state.textAlign=e.target.value;document.documentElement.style.setProperty('--reader-align',state.textAlign);savePrefs()};$$('.bg-swatch').forEach(b=>b.onclick=()=>{state.readerBg=b.dataset.bg;document.body.dataset.readerBg=state.readerBg;updatePalette();savePrefs()});$('#stripHeaders').onchange=async e=>{state.stripHeaders=e.target.checked;savePrefs();if(state.pdf&&!state.original)await renderCleanDocument()};$('#compactRefs').onchange=async e=>{state.compactRefs=e.target.checked;savePrefs();if(state.pdf&&!state.original)await renderCleanDocument()};$('#originalPage').onchange=async e=>{state.original=e.target.checked;savePrefs();if(state.pdf)await renderReaderMode()};$('#closePanelBtn').onclick=closePanel;$$('.nav-btn').forEach(b=>b.onclick=()=>openPanel(b.dataset.view));
 window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(state.appTheme==='system')applyAppTheme()});
-loadPrefs();loadAISettings();refreshLibrary().catch(()=>{$('#shelf').innerHTML='<div class="empty-shelf"><b>Não foi possível abrir a estante</b>O navegador bloqueou o armazenamento local.</div>'});showView('library');
+loadPrefs();loadAISettings();refreshLibrary().catch(()=>{$('#shelf').innerHTML='<div class="empty-shelf"><b>Não foi possível abrir a estante</b>O navegador bloqueou o armazenamento local.</div>'});showView('library');if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./service-worker.js').then(()=>navigator.serviceWorker.ready).then(reg=>reg.active?.postMessage({type:'CACHE_OFFLINE_ENGINE'})).catch(err=>console.warn('Cache offline indisponível:',err))})}
 </script>
 </body>
 </html>
