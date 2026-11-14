@@ -1,0 +1,12 @@
+{
+  "name": "lume-android",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Empacota o LUME (web) como APK Android via Capacitor",
+  "dependencies": {
+    "@capacitor/android": "6.2.3",
+    "@capacitor/cli": "6.2.3",
+    "@capacitor/core": "6.2.3",
+    "@capacitor-community/text-to-speech": "5.1.0"
+  }
+}

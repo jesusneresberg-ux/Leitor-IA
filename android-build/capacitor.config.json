@@ -1,0 +1,8 @@
+{
+  "appId": "com.jesusneresberg.lume",
+  "appName": "LUME",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}
