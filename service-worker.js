@@ -1,6 +1,6 @@
 // LUME — leitura PDF inteiramente local depois da primeira instalação online.
-const CACHE = 'lume-reader-offline-v5';
-const CORE = ['./', './index.html', './manifest.webmanifest',
+const CACHE = 'lume-reader-offline-v6';
+const CORE = ['./', './index.html', './manifest.webmanifest', './cloud.js',
               './assets/pdfjs/pdf.min.mjs', './assets/pdfjs/pdf.worker.min.mjs'];
 self.addEventListener('install', event => {
   event.waitUntil((async () => {

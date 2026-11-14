@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WWW="$ROOT/android-build/www"
 rm -rf "$WWW" && mkdir -p "$WWW/assets/pdfjs"
 
-cp "$ROOT/index.html" "$ROOT/manifest.webmanifest" "$WWW/"
+cp "$ROOT/index.html" "$ROOT/manifest.webmanifest" "$ROOT/cloud.js" "$WWW/"
 cp "$ROOT/android-build/native-tts.js" "$WWW/"
 # .mjs pode ser servido com tipo errado pelo servidor interno do Capacitor: usar .js
 cp "$ROOT/assets/pdfjs/pdf.min.mjs" "$WWW/assets/pdfjs/pdf.min.js"
